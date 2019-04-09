@@ -1,0 +1,155 @@
+<?xml version="1.0"?>
+<robot name="ros_mani">
+	<link name="base_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody1.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="orange" />
+			<origin rpy="1.57 0 0" xyz="-1.2 1.2 0" />
+		</visual>
+	</link>
+
+	<link name="mani_lid_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody2.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="white" />
+			<origin rpy="1.57 0 0" xyz="-0.96 0.96 0" />
+		</visual>
+	</link>
+
+	<link name="mani_arm01_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody3.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="black" />
+			<origin rpy="0 0 -0.15" xyz="-0.62 -0.42 0" />
+		</visual>
+	</link>
+
+	<link name="mani_arm02_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody4.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="red" />
+			<origin rpy="0 0 0" xyz="-0.38 -0.52 -0.12" />
+		</visual>
+	</link>
+
+	<link name="mani_arm03_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody5.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="green" />
+			<origin rpy="-1.57 0 0" xyz="-0.24 -0.28 0" />
+		</visual>
+	</link>
+
+	<link name="mani_gripper_base_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody6.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="orange" />
+			<origin rpy="-1.57 1.57 -1.57" xyz="-0.262 -0.28 0.25" />
+		</visual>
+	</link>
+
+	<link name="mani_left_gear_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody8.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="white" />
+			<origin rpy="1.57 3.1416 0" xyz="0 0 0" />
+		</visual>
+	</link>
+
+	<link name="mani_right_gear_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://ros_manipulator_project/meshes/MeshBody7.stl" scale="0.002 0.002 0.002"/>
+			</geometry>
+			<material name="white" />
+			<origin rpy="0 0 0" xyz="0 0 0" />
+		</visual>
+	</link>
+
+	<joint name="base_joint" type="revolute">
+		<parent link="base_link" />
+		<child link="mani_lid_link" />
+		<axis xyz="0 0 1" />
+		<limit effort="1000.0" lower="0.0" upper="3.1416" velocity="1.0" />
+		<origin rpy="0 0 0" xyz="0 0 1.12" />
+	</joint>
+
+	<joint name="lid_joint" type="revolute">
+		<parent link="mani_lid_link" />
+		<child link="mani_arm01_link" />
+		<axis xyz="0 0 1" />
+		<limit effort="1000.0" lower="0.0" upper="3.1416" velocity="1.0" />
+		<origin rpy="0 1.57 0" xyz="-0.07 0.25 0.83" />
+	</joint>
+
+	<joint name="arm01_joint" type="revolute">
+		<parent link="mani_arm01_link" />
+		<child link="mani_arm02_link" />
+		<axis xyz="0 0 1" />
+		<limit effort="1000.0" lower="0.0" upper="3.1416" velocity="1.0" />
+		<origin rpy="0 3.1416 1" xyz="0.335 2.38 0" />
+	</joint>
+
+	<joint name="arm02_joint" type="revolute">
+		<parent link="mani_arm02_link" />
+		<child link="mani_arm03_link" />
+		<axis xyz="0 0 1" />
+		<limit effort="1000.0" lower="0.0" upper="3.1416" velocity="1.0" />
+		<origin rpy="1.57 0 0" xyz="-0.1 1.8 0.15" />
+	</joint>
+
+	<joint name="arm03_joint" type="revolute">
+		<parent link="mani_arm03_link" />
+		<child link="mani_gripper_base_link" />
+		<axis xyz="0 0 1" />
+		<limit effort="1000.0" lower="0.0" upper="3.1416" velocity="1.0" />
+		<origin rpy="1.57 3.1416 0" xyz="0.1 -0.3 -0.55" />
+	</joint>
+
+	<joint name="gripper_base_joint" type="revolute">
+		<parent link="mani_gripper_base_link" />
+		<child link="mani_left_gear_link" />
+		<axis xyz="0 0 1" />
+		<limit effort="1000.0" lower="0.0" upper="3.1416" velocity="1.0" />
+		<origin rpy="1.57 0 0" xyz="0.1 -0.3 -0.55" />
+	</joint>
+
+	<joint name="sub_gripper_base_joint" type="revolute">
+		<parent link="mani_gripper_base_link" />
+		<child link="mani_right_gear_link" />
+		<mimic joint="gripper_base_joint" />
+		<axis xyz="0 1 0" />
+		<limit effort="1000.0" lower="0.0" upper="3.1416" velocity="1.0" />
+		<origin rpy="0 0 0" xyz="0 0.5 0" />
+	</joint>
+
+	<material name="red">
+		<color rgba="0.8 0 0 1" />
+	</material>
+	<material name="green">
+		<color rgba="0 0.8 0 1" />
+	</material>
+	<material name="orange">
+		<color rgba="0.57 0.17 0.0 1" />
+	</material>
+	<material name="white">
+		<color rgba="0.8 0.8 0.8 1" />
+	</material>
+	<material name="black">
+		<color rgba="0 0 0 1" />
+	</material>
+</robot>
