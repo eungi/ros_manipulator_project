@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
-        - /RobotModel1/Links1
         - /TF1
       Splitter Ratio: 0.583333313
     Tree Height: 775
@@ -62,7 +61,7 @@ Visualization Manager:
         Expand Joint Details: false
         Expand Link Details: false
         Expand Tree: false
-        Link Tree Style: ""
+        Link Tree Style: Links in Alphabetic Order
         base_link:
           Alpha: 1
           Show Axes: false
@@ -130,19 +129,58 @@ Visualization Manager:
       Value: true
       Visual Enabled: true
     - Class: rviz/TF
-      Enabled: false
+      Enabled: true
       Frame Timeout: 15
       Frames:
         All Enabled: true
-      Marker Scale: 1
+        base_link:
+          Value: true
+        mani_arm01_link:
+          Value: true
+        mani_arm02_link:
+          Value: true
+        mani_arm03_link:
+          Value: true
+        mani_gripper_base_link:
+          Value: true
+        mani_left_gear_link:
+          Value: true
+        mani_left_gear_support_link:
+          Value: true
+        mani_left_gripper_link:
+          Value: true
+        mani_lid_link:
+          Value: true
+        mani_right_gear_link:
+          Value: true
+        mani_right_gear_support_link:
+          Value: true
+        mani_right_gripper_link:
+          Value: true
+      Marker Scale: 0.200000003
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
       Tree:
-        {}
+        base_link:
+          mani_lid_link:
+            mani_arm01_link:
+              mani_arm02_link:
+                mani_arm03_link:
+                  mani_gripper_base_link:
+                    mani_left_gear_link:
+                      mani_left_gripper_link:
+                        {}
+                    mani_left_gear_support_link:
+                      {}
+                    mani_right_gear_link:
+                      mani_right_gripper_link:
+                        {}
+                    mani_right_gear_support_link:
+                      {}
       Update Interval: 0
-      Value: false
+      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -168,25 +206,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 1.82780015
+      Distance: 1.3851043
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.0599999987
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0
-        Y: 0
-        Z: 0
+        X: 0.0261266232
+        Y: -0.0204709675
+        Z: 0.417115986
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.0500000007
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.435000002
+      Pitch: 0.214999944
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.870000124
+      Yaw: 6.26318502
     Saved: ~
 Window Geometry:
   Displays:
