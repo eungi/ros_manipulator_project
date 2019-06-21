@@ -1,5 +1,7 @@
 # ros_manipulator_project
 
+![ros_manipulator_project](./image/result)
+
 ### Download & Start project
 ~~~
 $ cd catkin_ws/src
