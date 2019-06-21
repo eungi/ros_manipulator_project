@@ -12,3 +12,10 @@ $ catkin_make
 ~~~
 $ roslaunch ros_manipulator_project mani_visual.launch
 ~~~
+
+### Run serial_node
+~~~
+$ sudo chmod 777 /dev/ttyACM0
+
+$ rosrun rosserial_python serial_node.py _port:=/dev/ttyACM0 _baud:=57600
+~~~
