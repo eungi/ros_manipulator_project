@@ -1,6 +1,6 @@
 # ros_manipulator_project
 
-![ros_manipulator_project](./image/result)
+![ros_manipulator_project](./image/result.png)
 
 ### Download & Start project
 ~~~
