@@ -1,0 +1,38 @@
+digraph G {
+node [shape=box];
+"base_link" [label="base_link"];
+"mani_lid_link" [label="mani_lid_link"];
+"mani_arm01_link" [label="mani_arm01_link"];
+"mani_arm02_link" [label="mani_arm02_link"];
+"mani_arm03_link" [label="mani_arm03_link"];
+"mani_gripper_base_link" [label="mani_gripper_base_link"];
+"mani_left_gear_support_link" [label="mani_left_gear_support_link"];
+"mani_left_gear_link" [label="mani_left_gear_link"];
+"mani_left_gripper_link" [label="mani_left_gripper_link"];
+"mani_right_gear_support_link" [label="mani_right_gear_support_link"];
+"mani_right_gear_link" [label="mani_right_gear_link"];
+"mani_right_gripper_link" [label="mani_right_gripper_link"];
+node [shape=ellipse, color=blue, fontcolor=blue];
+"base_link" -> "base_joint" [label="xyz: 0 0 0.12 \nrpy: 0 -0 0"]
+"base_joint" -> "mani_lid_link"
+"mani_lid_link" -> "lid_joint" [label="xyz: -0.007 0.025 0.083 \nrpy: 1.57 -0 0"]
+"lid_joint" -> "mani_arm01_link"
+"mani_arm01_link" -> "arm01_joint" [label="xyz: 0.0015 0.238 0 \nrpy: 3.14159 -7.34641e-06 3.14159"]
+"arm01_joint" -> "mani_arm02_link"
+"mani_arm02_link" -> "arm02_joint" [label="xyz: 0.018 0.18 0.015 \nrpy: 1.57 -0 0"]
+"arm02_joint" -> "mani_arm03_link"
+"mani_arm03_link" -> "arm03_joint" [label="xyz: 0.01 -0.03 -0.055 \nrpy: 0 1.5708 -1.5708"]
+"arm03_joint" -> "mani_gripper_base_link"
+"mani_gripper_base_link" -> "gear_support_joint" [label="xyz: 0.118 0.028 -0.021 \nrpy: 1.57 -0 0"]
+"gear_support_joint" -> "mani_left_gear_support_link"
+"mani_gripper_base_link" -> "gripper_base_joint" [label="xyz: 0.08 0.028 -0.04 \nrpy: 1.57 -0 0"]
+"gripper_base_joint" -> "mani_left_gear_link"
+"mani_left_gear_link" -> "gripper_joint" [label="xyz: 0.015 -0.06 -0.01 \nrpy: 0 -0 0.42"]
+"gripper_joint" -> "mani_left_gripper_link"
+"mani_gripper_base_link" -> "sub_gear_support_joint" [label="xyz: 0.118 0.028 -0.0005 \nrpy: 0 -0 0"]
+"sub_gear_support_joint" -> "mani_right_gear_support_link"
+"mani_gripper_base_link" -> "sub_gripper_base_joint" [label="xyz: 0.077 0.028 0.015 \nrpy: 0 -0 0"]
+"sub_gripper_base_joint" -> "mani_right_gear_link"
+"mani_right_gear_link" -> "sub_gripper_joint" [label="xyz: 0.023 0.01 0.057 \nrpy: 1.57 0.32 0"]
+"sub_gripper_joint" -> "mani_right_gripper_link"
+}
