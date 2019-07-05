@@ -2,80 +2,57 @@
 
 import rospy
 import numpy as np
+import utils
 
-from sensor_msgs.msg import JointState
-from std_msgs.msg import Header, ColorRGBA
-from visualization_msgs.msg import Marker
-from geometry_msgs.msg import Quaternion, Pose, Point, Vector3
-
-class Control :
+class Control() :
 	def __init__(self) :
 		self.goal = np.zeros(11)
 		self.pose_t = np.zeros(11)
 
-		self.joint_names = ['base_joint', 'lid_joint', 'arm01_joint', 'arm02_joint', 'arm03_joint', 'gripper_base_joint', 'sub_gripper_base_joint', 'gear_support_joint', 'sub_gear_support_joint', 'gripper_joint', 'sub_gripper_joint']
+		self.joint_names = ['base_joint', 'lid_joint', 'arm01_joint', 
+				    'arm02_joint', 'arm03_joint', 
+				    'gripper_base_joint', 'sub_gripper_base_joint', 
+				    'gear_support_joint', 'sub_gear_support_joint', 
+				    'gripper_joint', 'sub_gripper_joint']
 
 		self.shape_ = 'Not Detected'
 		self.drawing_flag = 'false'
 
-		self.draw_path = []
-
 		self.Zero_point = [-0.06, 0.02, 0.8]
 		self.T_point = [-0.06, 0.02, 0.8]
 
-		self.waypoint_z = 0.25
-		self.Triangle_waypoint = [[0., 0.5], [0.2, 0.25], [-0.2, 0.25]]
-		self.Rectangle_waypoint = [[0.1, 0.4], [0.1, 0.25], [-0.1, 0.25], [-0.1, 0.4]]
-		self.Pentagon_waypoint = [[0., 0.42], [0.1, 0.35], [0.07, 0.25], [-0.07, 0.25], [-0.1, 0.35]]
-		self.Hexagon_waypoint = [[0., 0.42], [0.07, 0.37], [0.07, 0.31], [0., 0.26], [-0.07, 0.31], [-0.07, 0.37]]
+		self.draw_path = []
+		self.path_interval = 30
+		self.step = 0
 
-	def make_JointState_topic(self, _pose) :
-		pose = JointState()
-		pose.header = Header()
-		pose.header.stamp = rospy.Time.now()
-		pose.name = self.joint_names
-		pose.position = _pose
-		pose.velocity = []
-		pose.effort = []
+	def path_planning(self, waypoints) :
+		full_path = []
 
-		return pose
+		# zero-pose -> first waypoint (waypoints[0])
+		full_path.append(self.path_interval_slice(self.Zero_point, waypoints[0]))
+		
+		# first waypoint -> last waypoint
+		for i in range(len(waypoints)-1) :
+			full_path.append(self.path_interval_slice(waypoints[i], waypoints[i+1]))
 
-	def shape_topic(self, shape) :
-		marker_ = Marker()
-		marker_.type = Marker.SPHERE_LIST	# LINE_STRIP
-		marker_.scale = Vector3(0.02, 0.02, 0.02)
-		marker_.header = Header(frame_id='base_link')
-		marker_.color = ColorRGBA(0.0, 1.0, 0.0, 0.8)
-		for pt in shape :
-			p = Point()
-			p.x = pt[0]
-			p.y = pt[1]
-			p.z = self.waypoint_z
-			marker_.points.append(p)
+		# waypoints[0] -> last waypoint (len(waypoints)+1)
+		full_path.append(self.path_interval_slice(waypoints[0], self.Zero_point))
 
-		return marker_
+		self.draw_path = full_path
 
-	def arm_pose_topic(self, _pose) :
-		marker = Marker(
-                		type = Marker.SPHERE,
-                		id = 0,
-				lifetime = rospy.Duration(1.5),
-				pose = Pose(Point(_pose[0], _pose[1], _pose[2]), Quaternion(0, 0, 0, 1)),
-				scale = Vector3(0.04, 0.04, 0.04),
-				header = Header(frame_id='base_link'),
-				color = ColorRGBA(1.0, 0.0, 1.0, 0.8))
+	def path_interval_slice(self, start_pt, end_pt) :
+		local_path = []
 
-		return marker
+		dx = (end_pt[0] - start_pt[0]) / self.path_interval
+		dy = (end_pt[1] - start_pt[1]) / self.path_interval
+		dz = (end_pt[2] - start_pt[2]) / self.path_interval
 
-	def return_waypoint(self) :
-		if self.shape_ == 'Not Detected' : return []
-		elif self.shape_ == 'Triangle' : return self.Triangle_waypoint
-		elif self.shape_ == 'Rectangle' : return self.Rectangle_waypoint
-		elif self.shape_ == 'Pentagon' : return self.Pentagon_waypoint
-		elif self.shape_ == 'Hexagon' : return self.Hexagon_waypoint
-		else : return []
+		#local_path.append(start_pt)
 
-	def path_planning(self) :
+		for d in range(self.path_interval) :
+			pt_x = start_pt[0] + (d+1)*dx
+			pt_y = start_pt[1] + (d+1)*dy
+			pt_z = start_pt[2] + (d+1)*dz
+			local_path.append([pt_x, pt_y, pt_z])
 
-		# self.draw_path = path
-		pass
+		return local_path

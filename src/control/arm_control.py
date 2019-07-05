@@ -2,6 +2,7 @@
 
 import rospy
 import control_class
+import utils
 
 from sensor_msgs.msg import JointState
 from std_msgs.msg import String, Int8
@@ -33,6 +34,7 @@ def controller() :
 	joint = rospy.Publisher('joint_states', JointState, queue_size=10)
 	marker = rospy.Publisher('visualization_marker', Marker, queue_size=100)
 	arm_pose = rospy.Publisher('arm_pose_marker', Marker, queue_size=100)
+	arm_path = rospy.Publisher('arm_path_marker', Marker, queue_size=100)
 
 	rospy.Subscriber("robotmaker/shape_arm", Int8, perception_node)
 
@@ -40,6 +42,7 @@ def controller() :
 	shape = 'Not Detected'
 
 	control_ = control_class.Control()
+	utils_ = utils.Utils()
 
 	while not rospy.is_shutdown():
 		if control_.drawing_flag == 'false' :
@@ -47,16 +50,24 @@ def controller() :
 				control_.shape_ = shape
 				print(control_.shape_)
 
-			if shape != 'Not Detected' :
-				control_.drawing_flag = 'true'
-				control_.path_planning()
+				if shape != 'Not Detected' :
+					control_.drawing_flag = 'true'
+					control_.path_planning(utils_.return_waypoint(control_.shape_))
+					control_.step = 0
 
 		if control_.drawing_flag == 'true' and len(control_.draw_path) > 0 :
-			print('draw start')
+			# drawing (inverce kinematics)
+			# print(control_.step//control_.path_interval, control_.step%control_.path_interval)
+			if control_.step < (len(control_.draw_path)*control_.path_interval)-1 :
+				control_.step += 1
+			else :
+				control_.drawing_flag = 'false'
+				#control_.draw_path = []
 
-		joint.publish(control_.make_JointState_topic(control_.pose_t))
-		marker.publish(control_.shape_topic(control_.return_waypoint()))
-		arm_pose.publish(control_.arm_pose_topic(control_.T_point))
+		joint.publish(utils_.make_JointState_topic(control_.pose_t, control_.joint_names))
+		marker.publish(utils_.shape_topic(utils_.return_waypoint(control_.shape_)))
+		arm_path.publish(utils_.path_visualization_topic(control_.draw_path))
+		arm_pose.publish(utils_.arm_pose_topic(control_.T_point))
 
 
 if __name__ == "__main__":
