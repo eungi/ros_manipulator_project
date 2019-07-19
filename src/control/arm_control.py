@@ -5,25 +5,25 @@ import control_class
 import utils
 
 from sensor_msgs.msg import JointState
-from std_msgs.msg import String, Int8
+from std_msgs.msg import String
 from visualization_msgs.msg import Marker
 
-def perception_node(data) :
+def perception_node(msg) :
 	global shape
 
-	if data.data == 0 :
+	if msg.data == "s:0" :
 		shape = 'Not Detected'
 
-	elif data.data == 1 :
+	elif msg.data == "s:1" :
 		shape = 'Triangle'
 
-	elif data.data == 2 :
+	elif msg.data == "s:2" :
 		shape = 'Rectangle'
 
-	elif data.data == 3 :
+	elif msg.data == "s:3" :
 		shape = 'Pentagon'
 
-	elif data.data == 4 :
+	elif msg.data == "s:4" :
 		shape = 'Hexagon'
 
 
@@ -36,7 +36,7 @@ def controller() :
 	arm_pose = rospy.Publisher('arm_pose_marker', Marker, queue_size=100)
 	arm_path = rospy.Publisher('arm_path_marker', Marker, queue_size=100)
 
-	rospy.Subscriber("robotmaker/shape_arm", Int8, perception_node)
+	rospy.Subscriber("robotmaker/shape_arm", String, perception_node)
 
 	global shape
 	shape = 'Not Detected'
@@ -56,13 +56,14 @@ def controller() :
 					control_.step = 0
 
 		if control_.drawing_flag == 'true' and len(control_.draw_path) > 0 :
-			# drawing (inverce kinematics)
-			# print(control_.step//control_.path_interval, control_.step%control_.path_interval)
+			control_.drawing()
+			rospy.sleep(0.05)
+
 			if control_.step < (len(control_.draw_path)*control_.path_interval)-1 :
 				control_.step += 1
 			else :
 				control_.drawing_flag = 'false'
-				#control_.draw_path = []
+				control_.draw_path = []
 
 		joint.publish(utils_.make_JointState_topic(control_.pose_t, control_.joint_names))
 		marker.publish(utils_.shape_topic(utils_.return_waypoint(control_.shape_)))
